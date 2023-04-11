@@ -1,0 +1,137 @@
+-- 1 Получить все данные
+select * from employees;
+
+--2 Вывести общее количество
+select count(*) from employees;
+
+--3 Выведите из таблицы employees записи с id равным 4, 34, 93
+select * from employees where id in (4,34,93);
+
+--4 Выведите из таблицы employees записи с email 'ydoohanx@nbcnews.com', 'bshreve1r@webmd.com'
+-- или записи из стран 'China' и 'Portugal'
+select id,first_name,email,country from employees where email in('ydoohan@nbcnews.com' ,'bshreve1r@webmd.com')
+or country in ('China', 'Portugal') order by email,country;
+
+--5 Выведите из таблицы developers все записи так, чтобы вместо id было employee_id, вместо first
+-- name и last name – employee_full_name, вместо salary - employee_salary
+select id as employee_id, concat(first_name,' ',last_name)  as full_name ,salary as employee_salary from employees;
+
+--6 Выберите из таблицы employees записи c зарплатой от 1000 до 3000
+select first_name,salary from employees where salary between  1000 and 3000;
+
+--7 Выберите из таблицы employees записи c id от 3 до 10 и зарплатой от 300 до 700
+select * from empl where id between 3 and 10 and salary between '300' and '700';
+
+
+--8 Выведите из таблицы full name(переименуйте column при выходе) country, salary где salary больше
+-- между 500 и 2000.
+select concat(first_name,' ',last_name)as full_name,country,salary from employees where salary between '500' and '2000';
+
+--9 Найдите в таблице employees минимальный возраст и выведите имя, страну и возвраст ????
+select name, country, extract(year from now()) - extract(year from date_of_birth) as age
+from empl order by age limit 1;
+
+--10 Найдите в таблице employees суммарный возраст всех работников
+select sum(extract(year from now())-extract(year from date_of_birth)) from empl;
+
+--11 Выберите  из  таблицы  developers  все  записи  так,  чтобы  туда  попали  только  записи  с  разной
+-- зарплатой
+select distinct * from employees where salary in (select salary from employees group by salary having count(*)=1);
+
+--12 Отсортируйте работников по фамилии (asc, desc)
+select last_name from employees group by last_name order by last_name;
+select last_name from employees group by last_name order by last_name desc;
+
+--13 Поменяйте название столбца 'first_name' на 'name'. (ddl)
+alter table employees rename first_name to name;
+select * from employees;
+
+--14 Добавьте ограничение unique полю email
+alter table employees add unique (email);
+
+--15 Поменяйте название таблицы employee на empl
+alter table employees rename to empl;
+select * from empl;
+
+--16 Получите SQL запросом все возрасты без дублирования
+select name,last_name,salary, extract(year from now())- extract(year from date_of_birth) as age from empl;
+
+--17 Найдите в таблице employees минимальную зарплату.
+select last_name,country,salary from empl where salary=(select min(salary)from empl);
+
+--18 Найдите в таблице employees максимальную зарплату
+select last_name,country,salary from empl where salary=(select max(salary)from empl);
+
+--19 Найдите в таблице employees суммарную зарплату.
+select sum(salary) from empl;
+select round(sum(salary)) from empl;
+
+--20 . Найдите в таблице employees суммарную зарплату для людей в возрасте от 30 до 50
+select sum(salary) as total_salary from empl,(select(extract(year from now())-extract(year from date_of_birth))
+    as age from empl) as age where age>=30 and age<=50;
+
+
+--21 . Найдите в таблице employees суммарную зарплату для id, равного 1, 2, 3 и 5
+select  sum(salary) as total_salary from empl where id in (1,2,3,5);
+
+-- 22. Найдите в таблице employees среднюю зарплату
+select avg(salary) as avg_salary from empl;
+
+--23 Найдите в таблице employees средний возраст
+select avg((extract(year from now())- extract(year from date_of_birth) ))as age from empl;
+
+--24 Отсортируйте работников по возврасту, (asc, desc)
+select extract(year from now())- extract(year from date_of_birth) as age from empl group by age order by age;
+select extract(year from now())- extract(year from date_of_birth) as age from empl group by age order by  age desc;
+
+--25 Обновите имя, фамилие и почту работника с id = 45,  на ваши данные
+update empl set name='Lira',last_name='Kanatova',email='l@gmail.com' where id= 45;
+SELECT * FROM empl WHERE id = 45;
+
+-- 26. Найдите работника с самой минимальной зарплатой и удалите его
+delete from empl where salary=(select min(salary)from empl) ;
+
+--27 Найдите работника, чей email закончивается на ' .com ' и выведите его полное имя и почту
+select concat(name,' ',last_name) as full_name,email from empl where email like '%.com';
+
+--28 Выведите  имя,  фамилие  и  возвраст  работника,  если  вторая  буква  в  имени  'а'  или  же  в  фамилии
+-- содержится буква 'z'??? chigara albadim!!!
+
+
+--29 Сгруппируйте работников по gender и посчитайте сколько их
+select gender,count(gender) from empl group by gender order by gender;
+
+--30 Выведите имя и дату рождения работников, кто родился с (1970-3-7 and 2004-9-23
+select last_name,date_of_birth from empl where date_of_birth between '1970-3-7' and '2004-9-23' ;
+
+--31 . Выведите полное имя, дату рождения и страну работников кто из Indonesia
+select name,last_name,date_of_birth,country from empl where country='Indonesia';
+
+--32 Выведите только тех работников, кто из 'Poland' и 'Philippines'
+select * from empl where country in('Poland','Philippines');
+
+--33 . Выведите только уникальные страны
+select distinct country from empl;
+
+--34 . Сгруппируйте работников по странам и посчитайте сколько их(работников)
+select country, count(country) from empl group by country order by country;
+
+-- 35. Выведите полное имя и их возвраст
+select concat(name,' ',last_name) as full_name, (extract(year from now())- extract(year from date_of_birth) ) as age from empl;
+
+-- 36. Посчитайте сколько человек в каждой стране и выведите те страны где больше 3 человеk
+select country,count(country) from empl group by country having count(*)>3 order by country ;
+
+--37 Отсортируйте работников по first name и выведите последние 5 записей
+select * from empl  order by name asc limit 5 offset (select count(*)from empl)-5;
+
+-- 38. Выведите только те записи, где id > 50
+select * from empl where id> 50;
+
+--39 . Найдите запись с first name = 'Bail' и обновите имя на любое другое
+update empl set name='Bilal' where name= 'Bail';
+select * from empl where name='Bilal';
+
+--40 Выведите средний возвраст всех записей
+select avg(extract(year from now())-extract(year from date_of_birth)) from empl;
+select round(avg(extract(year from now())-extract(year from date_of_birth))) from empl;
